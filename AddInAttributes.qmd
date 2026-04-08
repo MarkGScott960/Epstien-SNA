@@ -1,0 +1,185 @@
+---
+title: "AddInAttributes"
+author: "Mark Scott"
+format: html
+---
+
+
+# Set Up
+
+## Loadem
+```{r}
+library(tidyverse)
+NodeList <- readr::read_csv("C:/Users/Baron/DOJ_Emails/Desc Stats/NodeList.csv")
+
+colnames(NodeList)
+```
+
+## String Test
+
+
+
+# Gender
+```{r}
+# 0 Female, 1 Male, 2 Agender, 3 cant confirm one person)
+
+NodeList <- NodeList |> 
+  mutate(
+    Sex = case_when(
+      Node == "jeffrey epstein" ~ "1",
+      Node == "lesley groff" ~ "1",
+      Node == "richard kahn" ~ "1",
+      Node == "karyna shuliak"	~ "0",
+      Node == "boris nikolic" ~ "1",
+      Node == "bella klein" ~ "0",
+      Node == "american express travel" ~"2",
+      Node == "stewart oldfield" ~ "1",
+      Node == "larry visoski" ~ "1",
+      Node == "darren indyke" ~ "1",
+      Node == "paul morris" ~ "1",
+      Node == "ann rodriguez" ~ "0",
+      Node == "ivjet" ~ "3",
+      Node == "melanie spinella" ~ "0",
+      Node == "daphne wallace" ~ "0",
+      Node == "ghislaine maxwell" ~"0",
+      Node == "vahe stepanian" ~ "1",
+      Node == "sultan bin sulayem" ~ "1",
+      Node == "peggy siegal" ~ "0",
+      Node == "gary kerney" ~ "1",
+      Node == "andrew farkas" ~ "1",
+      Node == "brice gordon" ~ "1",
+      Node == "steve hanson" ~ "1",
+      Node == "daniel sabba" ~ "1",
+      Node == "david mitchell" ~ "1",
+      Node == "peter mandelson" ~ "1",
+      Node == "richard joslin" ~ "1",
+      Node == "noam chomsky" ~"1",
+      str_detect(Node,"^david.") ~ "1",
+      str_detect(Node,"^eileen") ~ "0",
+      str_detect(Node, "^cecile.") ~ "0",
+      str_detect(Node, "^eric ") ~ "1",
+      str_detect(Node, "amanda") ~ "0",
+      str_detect(Node, "jeff") ~"1",
+      Node == "faith kates" ~ "0",
+      str_detect(Node, "^brad") ~ "1",
+      str_detect(Node, "st james") ~ "2",
+      Node == "joi ito" ~ "1",
+      str_detect(Node, "^sarah") ~ "0",
+      str_detect(Node, "^martin ") ~"1",
+      str_detect(Node, "^ariane") ~"0",
+      str_detect(Node, "natalia") ~"0",
+      str_detect(Node, "^bradley") ~ "1",
+      Node == "jean luc brunel" ~ "1",
+      str_detect(Node, "tazia smith") ~ "0",
+      str_detect(Node, "^lawrence") ~ "1",
+      str_detect(Node, "^nicole") ~"0",
+      Node == "jes staley" ~"0",
+      str_detect(Node, "^jess") ~ "0",
+      str_detect(Node, "^emad") ~"1",
+      Node == "immi" ~ "2",
+      str_detect(Node, "^michael") ~ "1",
+      str_detect(Node, "^alireza") ~ "1", 
+      str_detect(Node, "deepak") ~ "1",
+      str_detect(Node, "valeria") ~ "0",
+      str_detect(Node, "^paul$|^paul ") ~"1",
+      str_detect(Node, "^cynthia") ~ "0",
+      str_detect(Node, "ehud") ~ "1",
+      str_detect(Node, "jermaine ruan") ~ "1",
+      str_detect(Node, "^ian$|^ian ") ~"1",
+      str_detect(Node, "^john") ~ "1",
+      str_detect(Node, "^eva ") ~ "0",
+      Node == "merwin dela cruz" ~"1",
+      str_detect(Node, "^harry") ~ "1",
+      str_detect(Node, "^larry") ~"1",
+      str_detect(Node, "^ike.*gr") ~ "1",
+      Node == "ion nicola" ~ "1",
+      Node == "ada clapp" ~ "0",
+      Node == "barnaby marsh" ~ "1",
+      str_detect(Node,"jennie") ~ "0",
+      Node == "pritzker" ~ "3",
+      str_detect(Node, "jabor") ~"1",
+      str_detect(Node, "^nic[hk][ o]") ~"1",
+      str_detect(Node, "^th*om") ~ "1",
+      Node == "lesley" ~ "3",
+      str_detect(Node, "^peter ") ~ "1",
+      Node == "Paul Barrett" ~ "1",
+      str_detect(Node, "^lyn[n ]") ~ "0",
+      str_detect(Node, "janusz") ~ "1",
+      Node == "warwick wicksman" ~ "1",
+      str_detect(Node,"^story") ~ "1",
+      str_detect(Node, "^google") ~ "2",
+      str_detect(Node, "^ann[a ]") ~ "0",
+      Node == "joscha bach" ~ "1",
+      str_detect(Node,"^mar[ck][ u]") ~ "1",
+      str_detect(Node, "^ste[vp].en") ~ "1",
+      Node == "soon yi previn" ~ "0",
+      Node == "terje rod larsen" ~ "1",
+      str_detect(Node, "jeann") ~"0",
+      Node == "al seckel" ~ "1",
+      str_detect(Node, "^carol|carol[iy]n") ~ "0",
+      str_detect(Node, "brigid") ~ "0",
+      str_detect(Node, "bebe") ~ "0",
+      str_detect(Node, "^barry") ~ "1",
+      Node == "zorro ranch" ~ "2",
+      str_detect(Node, "erika") ~"0",
+      str_detect(Node, "reid") ~ "1",
+      str_detect(Node, "^chris |^christoph") ~"1",
+      str_detect(Node, "^stephani") ~ "0",
+      str_detect(Node, "vijay") ~ "1",
+      str_detect(Node, ".uc.ano") ~ "1",
+      str_detect(Node, "^steven") ~ "1",
+      TRUE ~ Sex
+    )#,Sex = as.numeric(Sex)
+  )
+
+t <- NodeList |> 
+  filter(is.na(Sex)) |> 
+  group_by(Node) |> 
+  summarize(n=n()) |> 
+  arrange(desc(n))
+
+
+round((length(NodeList$Sex) - sum(t$n))/length(NodeList$Sex) *100,2)
+head(t)
+
+t1 <-  NodeList |> filter(str_detect(Node, "^steven")) |> group_by(Node) |> summarize(n=n()) |> arrange(desc(n))
+round((sum(t1$n) / length(NodeList$Sex))*100,2)
+
+
+```
+
+
+# BirthYear
+```{r}
+NodeList <- NodeList |> 
+  mutate(
+    DateOfBirth = case_when(
+      Node == "jeffrey epstein" ~ "20/01/1953"
+    )
+  )
+
+NodeList |> filter(!is.na(DateOfBirth))
+
+```
+
+
+
+# What person to look at next:
+
+```{r}
+t <- NodeList |> 
+  filter(is.na(Sex)|is.na(DateOfBirth)|is.na(Occupation)) |> 
+  group_by(Node) |> 
+  summarize(n=n()) |> 
+  arrange(desc(n))
+
+t
+```
+
+
+
+
+```{r}
+write_csv(NodeList, "NodeListUpdated.csv")
+
+```
